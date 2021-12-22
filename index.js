@@ -61,8 +61,6 @@ const USAGE = `Usage: node index.js tileset [zoom]
         console.log('OK!')
 
         // compare by file size - enough for us
-        const [oldSize, newSize] = [ fs.statSync(jsonOldPath).size, fs.statSync(jsonPath).size ];
-        console.log(`Old file: ${oldSize} Bytes, New file: ${newSize} Bytes`)
         if (fs.existsSync(jsonOldPath) && fs.statSync(jsonPath).size == fs.statSync(jsonOldPath).size){
             console.log('No changes')
             return;
