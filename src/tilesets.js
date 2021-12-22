@@ -7,7 +7,7 @@ const TILESETS = {
         "recipe": {
             "version": 1,
             "layers": {
-                "winter": {
+                "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/winter-src",
                     "minzoom": 0,
                     "maxzoom": 13
@@ -23,7 +23,7 @@ const TILESETS = {
         "recipe": {
             "version": 1,
             "layers": {
-                "desire": {
+                "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/desire-src",
                     "minzoom": 0,
                     "maxzoom": 13

@@ -8,6 +8,9 @@ const fs = require("fs");
 require('dotenv').config({ path: `${__dirname}/.env` });
 
 const USERNAME = 'bikeottawa';
+const USAGE = `Usage: node index.js tileset [zoom]
+- tileset: tileset id, see tilesets.js for definitions
+- zoom: optional zoom level`;
 
 (async () => {
 
@@ -17,11 +20,13 @@ const USERNAME = 'bikeottawa';
         return;
     }
 
-    const tileset = process.argv[2]
+    const [tileset, zoom] = process.argv.slice(2)
     if(!tileset) {
-        console.error(`Tileset not specified.
-Usage: node index.js tileset
-    - tileset: tileset id, see tilesets.js for definitions`)
+        console.error(`Tileset not specified\n${USAGE}`)
+        return;
+    }
+    if(zoom && isNaN(zoom)) {
+        console.error(`Bad zoom value\n${USAGE}`)
         return;
     }
 
@@ -36,6 +41,7 @@ Usage: node index.js tileset
     const jsonOldPath = `${__dirname}/data/${tileset}-old.json`
     const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
     const queryPath = `${__dirname}/queries/${tileset}.query`
+    if(zoom) config.recipe.layers.layer.maxzoom = +zoom
 
     console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
 
