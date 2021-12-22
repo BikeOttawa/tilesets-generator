@@ -17,7 +17,14 @@ const USERNAME = 'bikeottawa';
         return;
     }
 
-    const tileset = 'winter'
+    const tileset = process.argv[2]
+    if(!tileset) {
+        console.error(`Tileset not specified.
+Usage: node index.js tileset
+    - tileset: tileset id, see tilesets.js for definitions`)
+        return;
+    }
+
     if(!TILESETS[tileset]){
         console.error(`Tileset not defined: "${tileset}"`)
         return;
