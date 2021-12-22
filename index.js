@@ -4,7 +4,8 @@ const { TILESETS } = require('./src/tilesets');
 const { convertJSON } = require('./src/jsonl');
 const mapbox = require('./src/publish');
 const sleep = require('await-sleep');
-require('dotenv').config({ path: __dirname + "/.env" });
+const fs = require("fs");
+require('dotenv').config({ path: `${__dirname}/.env` });
 
 const USERNAME = 'bikeottawa';
 
@@ -25,8 +26,11 @@ const USERNAME = 'bikeottawa';
     const config = TILESETS[tileset]
     const osmPath = `${__dirname}/data/${tileset}.osm`
     const jsonPath = `${__dirname}/data/${tileset}.json`
+    const jsonOldPath = `${__dirname}/data/${tileset}-old.json`
     const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
     const queryPath = `${__dirname}/queries/${tileset}.query`
+
+    console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
 
     try {
         process.stdout.write(`Downloading OSM data to ${osmPath} ... `)
@@ -43,16 +47,26 @@ const USERNAME = 'bikeottawa';
         })
         console.log('OK!')
 
+        // compare by file size - enough for us
+        const [oldSize, newSize] = [ fs.statSync(jsonOldPath).size, fs.statSync(jsonPath).size ];
+        console.log(`Old file: ${oldSize} Bytes, New file: ${newSize} Bytes`)
+        if (fs.existsSync(jsonOldPath) && fs.statSync(jsonPath).size == fs.statSync(jsonOldPath).size){
+            console.log('No changes')
+            return;
+        }
+
         process.stdout.write(`Converting GeoJSON data to GeoJSONl ${jsonlPath} ... `)
         await convertJSON(jsonPath, jsonlPath)
         console.log('OK!')
+
+        fs.renameSync(jsonPath, jsonOldPath);
     }
     catch(err) {
         console.error(`Failed to process OSM data`, err)
         return;
     }
 
-    console.log("OSM Processing done. Time to publish to Mapbox")
+    console.log("-=Publishing tileset to Mapbox=-")
 
     try {
         await mapbox.initService(accessToken);
