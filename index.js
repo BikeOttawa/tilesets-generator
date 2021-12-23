@@ -1,12 +1,14 @@
 
-const exec = require('node-async-exec');
-const { TILESETS } = require('./src/tilesets');
-const { convertJSON } = require('./src/jsonl');
-const mapbox = require('./src/publish');
-const billing = require('./src/billing');
-const sleep = require('await-sleep');
-const fs = require("fs");
-require('dotenv').config({ path: `${__dirname}/.env` });
+import exec from 'node-async-exec';
+import { TILESETS } from './src/tilesets.js';
+import { convertJSON } from './src/jsonl.js';
+import * as mapbox from './src/publish.js';
+import * as billing from './src/billing.js';
+import sleep from 'await-sleep';
+import { existsSync, statSync, renameSync } from "fs";
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const USERNAME = 'bikeottawa';
 const USAGE = `Usage: node index.js tileset [zoom]
@@ -37,11 +39,11 @@ const USAGE = `Usage: node index.js tileset [zoom]
     }
 
     const config = TILESETS[tileset]
-    const osmPath = `${__dirname}/data/${tileset}.osm`
-    const jsonPath = `${__dirname}/data/${tileset}.json`
-    const jsonOldPath = `${__dirname}/data/${tileset}-old.json`
-    const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
-    const queryPath = `${__dirname}/queries/${tileset}.query`
+    const osmPath = `./data/${tileset}.osm`
+    const jsonPath = `./data/${tileset}.json`
+    const jsonOldPath = `./data/${tileset}-old.json`
+    const jsonlPath = `./data/${tileset}.jsonl`
+    const queryPath = `./queries/${tileset}.query`
 
     console.log(`\n********* ${new Date().toLocaleString()} *********`)
     console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
@@ -49,20 +51,20 @@ const USAGE = `Usage: node index.js tileset [zoom]
     try {
         process.stdout.write(`Downloading OSM data to ${osmPath} ... `)
         await exec({
-            path: __dirname,
+            // path: __dirname,
             cmd: [ `wget -nv -O ${osmPath} --post-file=${queryPath} "http://overpass-api.de/api/interpreter" --no-hsts` ]
         })
         console.log('OK!')
 
         process.stdout.write(`Converting OSM data GeoJSON in ${jsonPath} ... `)
         await exec({
-            path: __dirname,
+            // path: __dirname,
             cmd: [ `osmtogeojson -m ${osmPath} | geojson-pick ${config.tags} > ${jsonPath}` ]
         })
         console.log('OK!')
 
         // compare by file size - enough for us
-        if (fs.existsSync(jsonOldPath) && fs.statSync(jsonPath).size == fs.statSync(jsonOldPath).size){
+        if (existsSync(jsonOldPath) && statSync(jsonPath).size == statSync(jsonOldPath).size){
             console.log('No changes')
             return;
         }
@@ -72,7 +74,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
         await convertJSON(jsonPath, jsonlPath)
         console.log('OK!')
 
-        fs.renameSync(jsonPath, jsonOldPath);
+        renameSync(jsonPath, jsonOldPath);
     }
     catch(err) {
         console.error(`Failed to process OSM data`, err)

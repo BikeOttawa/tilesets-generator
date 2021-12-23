@@ -1,8 +1,8 @@
-const mts = require('@mapbox/mapbox-sdk/services/tilesets');
+import mts from '@mapbox/mapbox-sdk/services/tilesets.js';
 
 let mtsService = null;
 
-const initService = async function (accessToken) {
+export const initService = async function (accessToken) {
   try {
     mtsService = mts({ accessToken });
   } catch (error) {
@@ -11,7 +11,7 @@ const initService = async function (accessToken) {
 };
 
 // kick off the sync process by deleting the tileset source
-const deleteTilesetSource = async function (tilesetSourceId) {
+export const deleteTilesetSource = async function (tilesetSourceId) {
   try {
     process.stdout.write(`Deleting old tileset source ${tilesetSourceId} ... `)
     const response = await mtsService.deleteTilesetSource({ id: tilesetSourceId }).send();
@@ -25,7 +25,7 @@ const deleteTilesetSource = async function (tilesetSourceId) {
 };
 
 // create a tileset source aka upload your data
-const createTilesetSource = async function (tilesetSourceId, tilesetSourcePath) {
+export const createTilesetSource = async function (tilesetSourceId, tilesetSourcePath) {
   // TODO validate the source data first
   // TODO handle multiple files for upload
   process.stdout.write("Uploading the source data ... ");
@@ -40,7 +40,7 @@ const createTilesetSource = async function (tilesetSourceId, tilesetSourcePath) 
 };
 
 // validate the recipe
-const validateRecipe = async function (recipe) {
+export const validateRecipe = async function (recipe) {
   try {
     process.stdout.write('Validating recipe ... ')
     const response = await mtsService.validateRecipe({ recipe: recipe }).send();
@@ -55,7 +55,7 @@ const validateRecipe = async function (recipe) {
   }
 };
 
-const tilesetExists = async function (username, tilesetId) {
+export const tilesetExists = async function (username, tilesetId) {
   try {
     process.stdout.write('Checking if tileset exists ... ')
     const response = await mtsService.listTilesets().send();
@@ -72,7 +72,7 @@ const tilesetExists = async function (username, tilesetId) {
 };
 
 // has the tileset been created? if not, create the tileset using the tileset source
-const createTileset = async function (username, tilesetId, tilesetName, recipe) {
+export const createTileset = async function (username, tilesetId, tilesetName, recipe) {
   try {
     process.stdout.write(`Creating ${username}.${tilesetId} tileset ... `)
     const response = await mtsService.createTileset({
@@ -89,7 +89,7 @@ const createTileset = async function (username, tilesetId, tilesetName, recipe) 
 };
 
 // if the tileset exists, make sure it has the latest recipe
-const updateRecipe = async function (username, tilesetId, recipe) {
+export const updateRecipe = async function (username, tilesetId, recipe) {
   try {
     process.stdout.write(`Updating ${username}.${tilesetId} tileset ... `)
     const response = await mtsService.updateRecipe({
@@ -104,7 +104,7 @@ const updateRecipe = async function (username, tilesetId, recipe) {
 };
 
 // publish the tileset
-const publishTileset = async function (username, tilesetId) {
+export const publishTileset = async function (username, tilesetId) {
   try {
     process.stdout.write(`Publishing ${username}.${tilesetId} tileset ... `)
     const publishRequest = mtsService.publishTileset({
@@ -117,15 +117,4 @@ const publishTileset = async function (username, tilesetId) {
   } catch (error) {
     console.log(error);
   }
-};
-
-module.exports = {
-  initService,
-  deleteTilesetSource,
-  createTilesetSource,
-  validateRecipe,
-  tilesetExists,
-  createTileset,
-  updateRecipe,
-  publishTileset,
 };

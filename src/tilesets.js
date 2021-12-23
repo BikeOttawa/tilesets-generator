@@ -1,4 +1,4 @@
-const TILESETS = {
+export const TILESETS = {
     "winter": {
         "tilesetId": "winter",
         "tilesetSourceId": "winter-src",
@@ -64,5 +64,3 @@ const TILESETS = {
         }
     }
 }
-
-module.exports = { TILESETS }

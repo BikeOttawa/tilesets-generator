@@ -1,5 +1,5 @@
 
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const TIERS = {
   "30cm": {
@@ -22,7 +22,7 @@ const TIERS = {
   }
 }
 
-const getBilling = async function (accessToken) {
+export const getBilling = async function (accessToken) {
   try {
     const response = await fetch(`https://api.mapbox.com/billing/usage/v1?access_token=${accessToken}`)
     const data = await response.json();
@@ -34,19 +34,13 @@ const getBilling = async function (accessToken) {
   }
 };
 
-const getUsage = function(data) {
+export const getUsage = function(data) {
   return Object.keys(TIERS).map((k) => `${k}(${TIERS[k].range}): ${(+data[TIERS[k].processing_key] * 100 / TIERS[k].processing_limit).toFixed(2)}%`)
 }
 
-const getBestZoom = function (data) {
+export const getBestZoom = function (data) {
   for(const tier of Object.values(TIERS).sort((a,b) => +b.zoom - +a.zoom)){
     if(data[tier.processing_key] < 0.90 * tier.processing_limit) return tier.zoom;  // 90% limit since billing is updated daily
   }
   return "5"  //always free tier
-};
-
-module.exports = {
-  getBilling,
-  getBestZoom,
-  getUsage
 };

@@ -1,12 +1,12 @@
-const fs = require("fs");
-const geojsonStream = require("geojson-stream");
+import { createWriteStream, createReadStream } from "fs";
+import { parse } from "geojson-stream";
 
-async function convertJSON(jsonPath, jsonlPath) {
+export async function convertJSON(jsonPath, jsonlPath) {
   try {
-    const ldgeojson = fs.createWriteStream(jsonlPath);
+    const ldgeojson = createWriteStream(jsonlPath);
     return new Promise((resolve, reject) => {
-      fs.createReadStream(jsonPath)
-        .pipe(geojsonStream.parse(row => {
+      createReadStream(jsonPath)
+        .pipe(parse(row => {
           if (row.geometry.coordinates === null) {
             return null;
           }
@@ -22,5 +22,3 @@ async function convertJSON(jsonPath, jsonlPath) {
     console.log(err);
   }
 }
-
-module.exports = { convertJSON }

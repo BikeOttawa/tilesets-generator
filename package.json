@@ -12,6 +12,7 @@
   },
   "author": "Yaro Shkvorets",
   "license": "ISC",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/BikeOttawa/tilesets-uploader/issues"
   },
