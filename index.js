@@ -3,6 +3,7 @@ const exec = require('node-async-exec');
 const { TILESETS } = require('./src/tilesets');
 const { convertJSON } = require('./src/jsonl');
 const mapbox = require('./src/publish');
+const billing = require('./src/billing');
 const sleep = require('await-sleep');
 const fs = require("fs");
 require('dotenv').config({ path: `${__dirname}/.env` });
@@ -20,12 +21,12 @@ const USAGE = `Usage: node index.js tileset [zoom]
         return;
     }
 
-    const [tileset, zoom] = process.argv.slice(2)
+    const [tileset, argZoom] = process.argv.slice(2)
     if(!tileset) {
         console.error(`Tileset not specified\n${USAGE}`)
         return;
     }
-    if(zoom && isNaN(zoom)) {
+    if(argZoom && isNaN(argZoom)) {
         console.error(`Bad zoom value\n${USAGE}`)
         return;
     }
@@ -41,7 +42,6 @@ const USAGE = `Usage: node index.js tileset [zoom]
     const jsonOldPath = `${__dirname}/data/${tileset}-old.json`
     const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
     const queryPath = `${__dirname}/queries/${tileset}.query`
-    if(zoom) config.recipe.layers.layer.maxzoom = +zoom
 
     console.log(`\n********* ${new Date().toLocaleString()} *********`)
     console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
@@ -64,7 +64,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
         // compare by file size - enough for us
         if (fs.existsSync(jsonOldPath) && fs.statSync(jsonPath).size == fs.statSync(jsonOldPath).size){
             console.log('No changes')
-            return;
+            //return;
         }
         //TODO: for pathways calculate statistics
 
@@ -79,6 +79,23 @@ const USAGE = `Usage: node index.js tileset [zoom]
         return;
     }
 
+    console.log("-=Determining zoom level=-")
+
+    try {
+        const billingData = await billing.getBilling(accessToken);
+        const usage = billing.getUsage(billingData)
+        console.log(`Usage: ${usage.join(', ')}`)
+        const bestZoom = Math.min(
+            +billing.getBestZoom(billingData),          // fits free tier
+            argZoom ? +argZoom : 15,                    // <= specified cli arg
+            +config.recipe.layers.layer.maxzoom );      // <= recipe maxzoom level (no need for amenities at high zoom)
+        console.log(`Chosen Zoom level: ${bestZoom}`)
+        config.recipe.layers.layer.maxzoom = bestZoom
+
+    } catch (err) {
+        console.error(`Failed to determine zoom level based on billing`, err);
+        return;
+    }
     console.log("-=Publishing tileset to Mapbox=-")
 
     try {
