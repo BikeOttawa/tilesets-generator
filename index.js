@@ -7,8 +7,11 @@ import * as billing from './src/billing.js';
 import sleep from 'await-sleep';
 import { existsSync, statSync, renameSync } from "fs";
 import dotenv from 'dotenv'
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dotenv.config();
+dotenv.config({ path: `${__dirname}/.env` });
 
 const USERNAME = 'bikeottawa';
 const USAGE = `Usage: node index.js tileset [zoom]
@@ -39,11 +42,11 @@ const USAGE = `Usage: node index.js tileset [zoom]
     }
 
     const config = TILESETS[tileset]
-    const osmPath = `./data/${tileset}.osm`
-    const jsonPath = `./data/${tileset}.json`
-    const jsonOldPath = `./data/${tileset}-old.json`
-    const jsonlPath = `./data/${tileset}.jsonl`
-    const queryPath = `./queries/${tileset}.query`
+    const osmPath = `${__dirname}/data/${tileset}.osm`
+    const jsonPath = `${__dirname}/data/${tileset}.json`
+    const jsonOldPath = `${__dirname}/data/${tileset}-old.json`
+    const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
+    const queryPath = `${__dirname}/queries/${tileset}.query`
 
     console.log(`\n********* ${new Date().toLocaleString()} *********`)
     console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
@@ -51,14 +54,14 @@ const USAGE = `Usage: node index.js tileset [zoom]
     try {
         process.stdout.write(`Downloading OSM data to ${osmPath} ... `)
         await exec({
-            // path: __dirname,
+            path: __dirname,
             cmd: [ `wget -nv -O ${osmPath} --post-file=${queryPath} "http://overpass-api.de/api/interpreter" --no-hsts` ]
         })
         console.log('OK!')
 
         process.stdout.write(`Converting OSM data GeoJSON in ${jsonPath} ... `)
         await exec({
-            // path: __dirname,
+            path: __dirname,
             cmd: [ `osmtogeojson -m ${osmPath} | geojson-pick ${config.tags} > ${jsonPath}` ]
         })
         console.log('OK!')
