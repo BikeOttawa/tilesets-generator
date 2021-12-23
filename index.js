@@ -65,6 +65,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
             console.log('No changes')
             return;
         }
+        //TODO: for pathways calculate statistics
 
         process.stdout.write(`Converting GeoJSON data to GeoJSONl ${jsonlPath} ... `)
         await convertJSON(jsonPath, jsonlPath)

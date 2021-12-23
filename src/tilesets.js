@@ -30,6 +30,38 @@ const TILESETS = {
                 }
             }
         }
+    },
+    "amenities": {
+        "tilesetId": "amenities",
+        "tilesetSourceId": "amenities-src",
+        "tilesetName": "BikeOttawa Amenities",
+        "tags": "id amenity leisure playground tourism shop craft name",
+        "recipe": {
+            "version": 1,
+            "layers": {
+                "layer": {
+                    "source": "mapbox://tileset-source/bikeottawa/amenities-src",
+                    "minzoom": 0,
+                    "maxzoom": 10
+                }
+            }
+        }
+    },
+    "pathways": {
+        "tilesetId": "pathways",
+        "tilesetSourceId": "pathways-src",
+        "tilesetName": "BikeOttawa Pathways",
+        "tags": "winter_service surface width smoothness lit id highway footway",
+        "recipe": {
+            "version": 1,
+            "layers": {
+                "layer": {
+                    "source": "mapbox://tileset-source/bikeottawa/pathways-src",
+                    "minzoom": 0,
+                    "maxzoom": 13
+                }
+            }
+        }
     }
 }
 
