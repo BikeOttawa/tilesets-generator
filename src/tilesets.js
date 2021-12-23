@@ -10,7 +10,7 @@ const TILESETS = {
                 "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/winter-src",
                     "minzoom": 0,
-                    "maxzoom": 15
+                    "maxzoom": 14
                 }
             }
         }
@@ -26,7 +26,7 @@ const TILESETS = {
                 "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/desire-src",
                     "minzoom": 0,
-                    "maxzoom": 15
+                    "maxzoom": 12
                 }
             }
         }
@@ -42,7 +42,7 @@ const TILESETS = {
                 "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/amenities-src",
                     "minzoom": 0,
-                    "maxzoom": 10
+                    "maxzoom": 14
                 }
             }
         }
@@ -58,7 +58,7 @@ const TILESETS = {
                 "layer": {
                     "source": "mapbox://tileset-source/bikeottawa/pathways-src",
                     "minzoom": 0,
-                    "maxzoom": 15
+                    "maxzoom": 14
                 }
             }
         }
