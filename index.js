@@ -64,7 +64,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
         // compare by file size - enough for us
         if (fs.existsSync(jsonOldPath) && fs.statSync(jsonPath).size == fs.statSync(jsonOldPath).size){
             console.log('No changes')
-            //return;
+            return;
         }
         //TODO: for pathways calculate statistics
 
