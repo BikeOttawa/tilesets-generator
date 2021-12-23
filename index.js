@@ -43,6 +43,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
     const queryPath = `${__dirname}/queries/${tileset}.query`
     if(zoom) config.recipe.layers.layer.maxzoom = +zoom
 
+    console.log(`\n********* ${new Date().toLocaleString()} *********`)
     console.log(`-=Pre-processing OSM data for "${tileset}" tileset=-`)
 
     try {
