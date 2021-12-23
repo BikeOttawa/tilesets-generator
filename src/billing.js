@@ -40,7 +40,7 @@ const getUsage = function(data) {
 
 const getBestZoom = function (data) {
   for(const tier of Object.values(TIERS).sort((a,b) => +b.zoom - +a.zoom)){
-    if(data[tier.processing_key] < 0.97 * tier.processing_limit) return tier.zoom;
+    if(data[tier.processing_key] < 0.90 * tier.processing_limit) return tier.zoom;  // 90% limit since billing is updated daily
   }
   return "5"  //always free tier
 };
