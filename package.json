@@ -25,6 +25,8 @@
     "geojson-stream": "^0.1.0",
     "node-async-exec": "^1.2.0",
     "node-fetch": "^2.6.6",
-    "osmtogeojson": "^3.0.0-beta.4"
+    "osmtogeojson": "^3.0.0-beta.4",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
   }
 }
