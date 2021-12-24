@@ -62,5 +62,27 @@ export const TILESETS = {
                 }
             }
         }
+    },
+    "lts": {
+        "tilesetId": "lts",
+        "tilesetSourceId": "lts-src",
+        "tilesetName": "BikeOttawa LTS",
+        "json": [
+            { path: "../ltsanalyzer/levelfiles/level_1.json", tag: "lts1" },
+            { path: "../ltsanalyzer/levelfiles/level_2.json", tag: "lts2" },
+            { path: "../ltsanalyzer/levelfiles/level_3.json", tag: "lts3" },
+            { path: "../ltsanalyzer/levelfiles/level_4.json", tag: "lts4" }
+        ],
+
+        "recipe": {
+            "version": 1,
+            "layers": {
+                "layer": {
+                    "source": "mapbox://tileset-source/bikeottawa/lts-src",
+                    "minzoom": 0,
+                    "maxzoom": 14
+                }
+            }
+        }
     }
 }

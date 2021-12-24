@@ -1,23 +1,27 @@
 import { createWriteStream, createReadStream } from "fs";
 import { parse } from "geojson-stream";
 
-export async function convertJSON(jsonPath, jsonlPath) {
+export async function convert(jsons, jsonlPath) {
   try {
-    const ldgeojson = createWriteStream(jsonlPath);
     return new Promise((resolve, reject) => {
-      createReadStream(jsonPath)
-        .pipe(parse(row => {
-          if (row.geometry.coordinates === null) {
-            return null;
-          }
-          return (JSON.stringify(row) + "\r\n");
-        }))
-        .pipe(ldgeojson)
-        .on("finish", () => {
-          resolve(true);
-        })
-        .on("error", reject);
-    });
+      const ldgeojson = createWriteStream(jsonlPath);
+      let files = jsons.length
+      for(let json of jsons) {
+        createReadStream(json.path)
+          .pipe(parse(row => {
+            if (row.geometry.coordinates === null) {
+              return null;
+            }
+            row.properties["tag"] = json["tag"];
+            return (JSON.stringify(row) + "\r\n");
+          }))
+          .pipe(ldgeojson)
+          .on("finish", () => {
+            if(--files == 0) resolve(true);
+          })
+          .on("error", reject);
+        }
+      });
   } catch (err) {
     console.log(err);
   }
