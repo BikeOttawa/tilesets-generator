@@ -43,7 +43,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
 
     const config = TILESETS[tileset]
     const osmPath = `${__dirname}/data/${tileset}.osm`
-    const jsonPath = config.json?.map(json => { return { tags: json.tags, path: `${__dirname}/${json.path}`}}) ?? [ { path: `${__dirname}/data/${tileset}.json`} ]
+    const jsonPath = config.json?.map(json => Object.assign(json,{path: `${__dirname}/${json.path}`})) ?? [ { path: `${__dirname}/data/${tileset}.json`} ]
     const jsonlPath = `${__dirname}/data/${tileset}.jsonl`
     const jsonlOldPath = `${__dirname}/data/${tileset}-old.jsonl`
     const queryPath = `${__dirname}/queries/${tileset}.query`
@@ -85,7 +85,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
         console.error(`Failed to process OSM data`, err)
         return;
     }
-
+return;
     console.log("-=Determining zoom level=-")
 
     try {
