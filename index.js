@@ -85,7 +85,7 @@ const USAGE = `Usage: node index.js tileset [zoom]
         console.error(`Failed to process OSM data`, err)
         return;
     }
-return;
+
     console.log("-=Determining zoom level=-")
 
     try {
